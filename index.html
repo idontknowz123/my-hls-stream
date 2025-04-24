@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live HLS Stream</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    video {
+      width: 100%;
+      max-width: 960px;
+      border: 2px solid #444;
+      border-radius: 8px;
+    }
+    h1 {
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Live HLS Stream</h1>
+  <video id="video" controls autoplay muted></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('video');
+    const hls = new Hls();
+
+    // URL to your Netlify-deployed stream
+    const streamUrl = 'https://test-ltn-srt-to-hls.netlify.app/hls/master.txt';
+
+    if (Hls.isSupported()) {
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = streamUrl;
+    } else {
+      alert("This browser does not support HLS playback.");
+    }
+  </script>
+</body>
+</html>
